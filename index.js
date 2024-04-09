@@ -1,17 +1,19 @@
 const express = require("express");
 const app = express();
-const PORT = 3000;
+const config = require("./configs/config");
 const sequelize = require("./Database/connect");
-const User = require("./models/User");
-const Role = require("./models/Role");
-const Brand = require("./models/Brand");
-const Product = require("./models/Product");
-const Order = require("./models/Order");
-const Comment = require("./models/Comment");
-const OrderProduct = require("./models/OrderProduct");
+app.use(express.json());
+app.use("/", require("./routes/index"));
+require("./models/User");
+require("./models/Role");
+require("./models/Brand");
+require("./models/Product");
+require("./models/Order");
+require("./models/Comment");
+require("./models/OrderProduct");
 require("./models/relationship");
 sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => {
-    console.log("Server is running on port 3000");
+  app.listen(config.PORT, () => {
+    console.log("Server is running on port ", config.PORT);
   });
 });
