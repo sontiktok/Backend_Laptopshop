@@ -35,6 +35,14 @@ const User = sequelize.define(
       type: Sequelize.STRING,
       allowNull: true,
     },
+    ResetPasswordToken: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    ResetPasswordExp: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
   },
   {
     timestamps: false, // Thiết lập tùy chọn này để tự động bao gồm createdAt và updatedAt
