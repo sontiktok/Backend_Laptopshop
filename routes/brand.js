@@ -4,82 +4,66 @@ const Brand = require("../models/Brand");
 const { where } = require("sequelize");
 const authorization = require("../middlewares/authorization");
 const authentication = require("../middlewares/authentication");
+const Res = require("../helper/response");
+const validator = require("../middlewares/validator");
+const brandSchema = require("../validations/brandSchema");
 //get all brand
-router.get(
-  "/getAll",
-  authentication,
-  authorization("user"),
-  async function (req, res, next) {
-    const Brands = await Brand.findAll();
-    res.status(200).json({
-      success: true,
-      data: Brands,
-    });
-  }
-);
+router.get("/getAll", async function (req, res, next) {
+  const Brands = await Brand.findAll();
+  return Res(res, 200, true, Brands, "Get all brand successfully!");
+});
 //get brand by Id
 router.get("/getBrandById/:id", async function (req, res, next) {
   const { id } = req.params;
   try {
     const brand = await Brand.findByPk(id);
-    if (brand) {
-      // Kiểm tra xem có tìm thấy brand không
-      res.status(200).json({
-        success: true,
-        data: brand,
-      });
-    } else {
-      res.status(404).json({
-        success: false,
-        message: "Brand not found",
-      });
+    if (!brand) {
+      return Res(res, 404, false, null, "Brand is not found");
     }
+    return Res(res, 200, true, brand, "Get all brand successfully!");
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      err: error.message,
-    });
+    return Res(res, 500, false, null, error.massage);
   }
 });
 //create brand
-router.post("/create", async function (req, res, next) {
-  const { name, desc } = req.body;
-  const brand = await Brand.create({ name, desc });
-  res.status(201).json({
-    success: true,
-    data: brand,
-  });
-});
+router.post(
+  "/create",
+  authentication,
+  authorization("admin"),
+  validator(brandSchema.createBrand),
+  async function (req, res, next) {
+    const { name, desc } = req.body;
+    const brand = await Brand.create({ name, desc });
+    return Res(res, 201, true, brand, "Create brand successfully");
+  }
+);
 //update
-router.put("/update/:id", async function (req, res, next) {
-  const { id } = req.params;
-  const { desc } = req.body;
-  try {
-    const brand = await Brand.findByPk(id);
-    if (brand) {
+router.put(
+  "/update/:id",
+  authentication,
+  authorization("admin"),
+  validator(brandSchema.updateBrand),
+  async function (req, res, next) {
+    const { id } = req.params;
+    const { newDesc } = req.body;
+    try {
+      const brand = await Brand.findByPk(id);
+      if (!brand) {
+        return Res(res, 404, true, null, "Brand not found");
+      }
       await Brand.update(
-        { desc: desc },
+        { desc: newDesc },
         {
           where: {
             id,
           },
         }
       );
-      res.status(200).json({
-        success: true,
-        massage: "Update succesfully",
-      });
-    } else {
-      res.status(404).json({
-        success: false,
-        message: "Brand not found",
-      });
+      return Res(res, 200, true, null, "Update brand successfully.");
+    } catch (error) {
+      return Res(res, 404, true, null, error.massage);
     }
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      err: error.message,
-    });
   }
-});
+);
+
 module.exports = router;

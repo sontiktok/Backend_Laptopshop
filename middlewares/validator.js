@@ -4,7 +4,6 @@ const validator = (schema, property = "body") => {
     if (!error) {
       next();
     } else {
-      // console.log(JSON.stringify(error, null, 2))
       const { details } = error;
       const message = details[0].message;
       const path = details[0].path;

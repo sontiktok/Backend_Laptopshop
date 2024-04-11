@@ -10,15 +10,15 @@ const Order = sequelize.define(
     },
     status: {
       type: Sequelize.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     total_amount: {
       type: Sequelize.FLOAT,
-      allowNull: false,
+      allowNull: true,
     },
   },
   {
-    timestamps: false, // Thiết lập tùy chọn này để tự động bao gồm createdAt và updatedAt
+    timestamps: true, // Thiết lập tùy chọn này để tự động bao gồm createdAt và updatedAt
   }
 );
 

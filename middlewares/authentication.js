@@ -12,7 +12,6 @@ module.exports = async function (req, res, next) {
     token = req.headers.authorization.split(" ")[1];
   } else {
     if (req.cookies.token) {
-      console.log("dddd: ", req.cookies.token);
       token = req.cookies.token;
     }
   }
@@ -24,7 +23,6 @@ module.exports = async function (req, res, next) {
   }
   try {
     let result = jwt.verify(token, config.JWT_SECRET_KEY);
-
     if (result.exp * 1000 > Date.now()) {
       const user = await User.findOne({
         where: {

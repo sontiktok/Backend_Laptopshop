@@ -12,7 +12,8 @@ const sendMail = require("../helper/sendMail");
 const { where } = require("sequelize");
 const validator = require("../middlewares/validator");
 const authSchema = require("../validations/authSchema");
-const Res = require("../helper/respone");
+const Res = require("../helper/response");
+
 // Register
 router.post(
   "/register",
@@ -86,10 +87,7 @@ router.post(
   }
 );
 router.get("/me", authentication, async function (req, res, next) {
-  res.status(201).json({
-    success: true,
-    data: req.user,
-  });
+  Res(res, 200, true, req.user, "Get your info successfully!");
 });
 //Forgot password
 router.post(
@@ -167,4 +165,31 @@ router.post(
     }
   }
 );
+
+//Change password
+router.post(
+  "/changePassword",
+  authentication,
+  validator(authSchema.changePwSchema),
+  async function (req, res, next) {
+    const { oldPassword, newPassword } = req.body;
+    const user = req.user;
+    const checkPass = checkPassword(oldPassword, user.password);
+    if (!checkPass) {
+      Res(res, 404, false, null, "Incorrect password!");
+    }
+    try {
+      await User.update(
+        { password: hashPassword(newPassword) },
+        {
+          where: { id: user.id },
+        }
+      );
+      Res(res, 200, true, null, "Change password successfully");
+    } catch (error) {
+      Res(res, 500, false, null, "Change password have error");
+    }
+  }
+);
+
 module.exports = router;

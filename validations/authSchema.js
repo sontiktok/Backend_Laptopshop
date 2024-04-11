@@ -20,11 +20,14 @@ const loginSchema = Joi.object({
 const forgotPwSchema = Joi.object({
   email: emailSchema,
 });
-
+//Reset password
 const resetPwSchema = Joi.object({
   newPassword: pwSchema,
 });
-//Reset password
+//Change password
+const changePwSchema = Joi.object({
+  newPassword: pwSchema,
+});
 module.exports = {
   registerSchema,
   loginSchema,
@@ -32,4 +35,5 @@ module.exports = {
   emailSchema,
   forgotPwSchema,
   resetPwSchema,
+  changePwSchema,
 };
