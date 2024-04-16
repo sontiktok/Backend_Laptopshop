@@ -14,6 +14,7 @@ const path = require("path");
 const Brand = require("../models/Brand");
 const Comment = require("../models/Comment");
 const Order = require("../models/Order");
+const { predictSentiment } = require("../CheckComment/checkComment");
 //user crate comment
 router.post("/create", authentication, async function (req, res, next) {
   const userId = req.user.id;
@@ -30,11 +31,17 @@ router.post("/create", authentication, async function (req, res, next) {
         "Product does not exist. Cannot create comment."
       );
     }
+    let show = true;
+    const checkComment = await predictSentiment(content);
+    if (checkComment.includes("NEG")) {
+      show = false;
+    }
     // Tạo comment mới
     const comment = await Comment.create({
       content,
       userId,
       productId,
+      show,
     });
 
     // Trả về thông báo thành công nếu không có lỗi
@@ -70,9 +77,17 @@ router.put(
           "Comment not found or you don't have permission to modify it."
         );
       }
+      let show = true;
+      const checkComment = await predictSentiment(content);
+      if (checkComment.includes("NEG")) {
+        show = false;
+      }
 
       // Cập nhật nội dung của comment
-      await Comment.update({ content: content }, { where: { id: commentId } });
+      await Comment.update(
+        { content: content, show: show },
+        { where: { id: commentId } }
+      );
 
       // Trả về thông báo thành công
       return Res(res, 200, true, null, "Comment updated successfully.");
