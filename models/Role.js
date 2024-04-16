@@ -1,9 +1,8 @@
 const Sequelize = require("sequelize");
-const sequelize = require("../Database/connect"); // Đường dẫn tới tệp cấu hình Sequelize của bạn
+const sequelize = require("../Database/connect");
 const Role = sequelize.define(
   "role",
   {
-    // Định nghĩa các trường của bảng
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
@@ -16,7 +15,7 @@ const Role = sequelize.define(
     },
   },
   {
-    timestamps: false, // Thiết lập tùy chọn này để tự động bao gồm createdAt và updatedAt
+    timestamps: false,
   }
 );
 

@@ -13,7 +13,6 @@ const { where } = require("sequelize");
 const validator = require("../middlewares/validator");
 const authSchema = require("../validations/authSchema");
 const Res = require("../helper/response");
-
 // Register
 router.post(
   "/register",
@@ -44,6 +43,7 @@ router.post(
         username,
         password: hashPassword(password),
         email,
+        roleId: 2,
       });
       return Res(res, 201, true, user, "Register sucessfully");
     } catch (error) {

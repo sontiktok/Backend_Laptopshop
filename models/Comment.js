@@ -13,9 +13,19 @@ const Comment = sequelize.define(
       type: Sequelize.STRING,
       allowNull: false,
     },
+    deleted: {
+      type: Sequelize.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
+    },
+    show: {
+      type: Sequelize.BOOLEAN,
+      allowNull: true,
+      defaultValue: true,
+    },
   },
   {
-    timestamps: false, // Thiết lập tùy chọn này để tự động bao gồm createdAt và updatedAt
+    timestamps: true,
   }
 );
 module.exports = Comment;

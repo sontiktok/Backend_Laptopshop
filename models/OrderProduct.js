@@ -19,7 +19,6 @@ const OrderProduct = sequelize.define(
         key: "id",
       },
     },
-
     productId: {
       type: Sequelize.INTEGER,
       allowNull: false,
@@ -28,10 +27,14 @@ const OrderProduct = sequelize.define(
         key: "id",
       },
     },
-
     quantity: {
       type: Sequelize.INTEGER,
       allowNull: false,
+    },
+    deleted: {
+      type: Sequelize.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
     },
   },
   {

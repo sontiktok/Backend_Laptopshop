@@ -14,7 +14,7 @@ const Brand = sequelize.define(
       allowNull: false,
       unique: true,
     },
-    desc: {
+    description: {
       type: Sequelize.STRING,
       allowNull: true,
     },

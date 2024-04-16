@@ -14,7 +14,7 @@ const Product = sequelize.define(
       allowNull: false,
       unique: true,
     },
-    desc: {
+    description: {
       type: Sequelize.STRING,
       allowNull: true,
     },
@@ -29,6 +29,11 @@ const Product = sequelize.define(
     image: {
       type: Sequelize.STRING,
       allowNull: true,
+    },
+    deleted: {
+      type: Sequelize.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
     },
   },
   {

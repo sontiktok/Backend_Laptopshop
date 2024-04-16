@@ -8,12 +8,12 @@ const Res = require("../helper/response");
 const validator = require("../middlewares/validator");
 const brandSchema = require("../validations/brandSchema");
 //get all brand
-router.get("/getAll", async function (req, res, next) {
+router.get("/", async function (req, res, next) {
   const Brands = await Brand.findAll();
   return Res(res, 200, true, Brands, "Get all brand successfully!");
 });
 //get brand by Id
-router.get("/getBrandById/:id", async function (req, res, next) {
+router.get("/:id", async function (req, res, next) {
   const { id } = req.params;
   try {
     const brand = await Brand.findByPk(id);
@@ -27,19 +27,19 @@ router.get("/getBrandById/:id", async function (req, res, next) {
 });
 //create brand
 router.post(
-  "/create",
+  "/",
   authentication,
   authorization("admin"),
   validator(brandSchema.createBrand),
   async function (req, res, next) {
-    const { name, desc } = req.body;
-    const brand = await Brand.create({ name, desc });
+    const { name, description } = req.body;
+    const brand = await Brand.create({ name, description });
     return Res(res, 201, true, brand, "Create brand successfully");
   }
 );
 //update
 router.put(
-  "/update/:id",
+  "/:id",
   authentication,
   authorization("admin"),
   validator(brandSchema.updateBrand),
@@ -52,7 +52,7 @@ router.put(
         return Res(res, 404, true, null, "Brand not found");
       }
       await Brand.update(
-        { desc: newDesc },
+        { description: newDesc },
         {
           where: {
             id,
