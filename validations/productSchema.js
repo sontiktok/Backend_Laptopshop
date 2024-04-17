@@ -12,14 +12,14 @@ const brandId = Joi.number()
 //Create Brand
 const createProduct = Joi.object({
   name: nameProduct,
-  desc: descProduct,
+  description: descProduct,
   price: priceProduct,
   quantity: quantity,
   brandId: brandId,
 });
 
 const updateProduct = Joi.object({
-  desc: descProduct,
+  description: descProduct,
   price: priceProduct,
   quantity: quantity,
 });

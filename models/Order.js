@@ -16,9 +16,14 @@ const Order = sequelize.define(
       type: Sequelize.FLOAT,
       allowNull: true,
     },
+    deleted: {
+      type: Sequelize.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
+    },
   },
   {
-    timestamps: true, // Thiết lập tùy chọn này để tự động bao gồm createdAt và updatedAt
+    timestamps: true,
   }
 );
 

@@ -11,9 +11,10 @@ const getAllBrandIds = require("../helper/getBrandId");
 const upload = require("../configs/multerConfig");
 const fs = require("fs");
 const path = require("path");
+const Brand = require("../models/Brand");
 
 //get all product
-router.get("/", async function (req, res, next) {
+router.get("/get-all", async function (req, res, next) {
   try {
     const product = await Product.findAll();
     return Res(res, 200, true, product, "Get all product successfully!");
@@ -22,7 +23,7 @@ router.get("/", async function (req, res, next) {
   }
 });
 //get product by Id
-router.get("/getProductById/:id", async function (req, res, next) {
+router.get("/get-by-id/:id", async function (req, res, next) {
   const { id } = req.params;
   try {
     const product = await Product.findByPk(id);
@@ -43,7 +44,7 @@ router.post(
   upload.single("image"),
   async function (req, res, next) {
     try {
-      let { name, desc, price, quantity, brandId } = req.body;
+      let { name, description, price, quantity, brandId } = req.body;
       const image = req.file ? req.file.filename : "";
       price = parseFloat(price);
       (quantity = parseInt(quantity)), (brandId = parseInt(brandId));
@@ -59,7 +60,7 @@ router.post(
       }
       const product = await Product.create({
         name,
-        desc,
+        description,
         price,
         quantity,
         image,
@@ -78,7 +79,6 @@ router.post(
     }
   }
 );
-
 //update
 router.put(
   "/update/:id",
@@ -87,14 +87,14 @@ router.put(
   validator(productSchema.updateProduct),
   async function (req, res, next) {
     const { id } = req.params;
-    const { desc, quantity, price } = req.body;
+    const { description, quantity, price } = req.body;
     try {
       const product = await Product.findByPk(id);
       if (!product) {
         return Res(res, 404, true, null, "Product not found");
       }
       await Product.update(
-        { desc, quantity, price },
+        { description, quantity, price },
         {
           where: {
             id,
@@ -107,4 +107,59 @@ router.put(
     }
   }
 );
+//get all product by Brand
+router.get("/get-by-brand/:id", async function (req, res, next) {
+  const id = req.params.id;
+  let brand;
+  let listProduct;
+  try {
+    brand = await Brand.findOne({
+      where: {
+        id,
+      },
+    });
+  } catch (error) {
+    return Res(res, 404, false, null, error);
+  }
+  if (!brand) {
+    return Res(res, 404, false, null, "Brand not found!");
+  }
+  try {
+    listProduct = await Product.findAll({
+      where: {
+        brandId: id,
+      },
+    });
+    return Res(res, 200, true, listProduct, `Products of brand: ${brand.name}`);
+  } catch (error) {
+    return Res(res, 404, false, null, error);
+  }
+});
+
+//Get product by price
+router.get("/sort/asc-price", async function (req, res, next) {
+  console.log("Me may nah");
+  try {
+    console.log("Vai cacc");
+    const listProduct = await Product.findAll({
+      order: [["price", "ASC"]],
+    });
+    console.log(listProduct);
+    return Res(res, 200, true, listProduct, `Products sort asc`);
+  } catch (error) {
+    return Res(res, 404, false, null, error);
+  }
+});
+//Get product by price
+router.get("/sort/desc-price", async function (req, res, next) {
+  try {
+    const listProduct = await Product.findAll({
+      order: [["price", "DESC"]],
+    });
+    return Res(res, 200, true, listProduct, `Products sort desc`);
+  } catch (error) {
+    return Res(res, 404, false, null, error);
+  }
+});
+
 module.exports = router;
